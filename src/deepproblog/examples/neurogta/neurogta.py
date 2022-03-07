@@ -25,7 +25,8 @@ model = Model("model2.pl", [gta_net1])
 model.add_tensor_source("train", train_dataset)
 model.add_tensor_source("test", test_dataset)
 model.set_engine(ExactEngine(model), cache=True)
-
+print(gta_network1.features[0].weight)
+"""
 train_obj = train_model(
     model,
     loader,
@@ -36,6 +37,18 @@ train_obj = train_model(
     test=lambda x: [("Accuracy", get_confusion_matrix(x, test_dataset).accuracy())],
     infoloss=0.25,
 )
+"""
+train_obj = train_model(
+    model,
+    loader,
+    StopOnPlateau("Accuracy", warm_up=10, patience=10)
+    | Threshold("Accuracy", 1.0, duration=1),
+    log_iter=100 // batch_size,
+    test_iter=100 // batch_size,
+    test=lambda x: [("Accuracy", get_confusion_matrix(x, test_dataset).accuracy())],
+    infoloss=0.25,
+)
+print(gta_network1.features[0].weight)
 
 
 

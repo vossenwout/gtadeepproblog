@@ -28,10 +28,12 @@ class Traffic_keypress_data(ImageDataset):
                 self.data.append(line)
 
     def to_query(self, i):
-        key_input = self.data[i]
+        key_input = eval(self.data[i])
+
         # we formuleren input query
         sub = {Term("a"): Term("tensor", Term(self.subset, Constant(i)))}
-        return Query(Term("drivinginput", Term("a"), Term(key_input)), sub)
+        #return Query(Term("drivinginput", Term("a"), Term(key_input)), sub)
+        return Query(Term("drivinginput", Term("a"), key_input), sub)
 
     def __len__(self):
         return len(self.data)
