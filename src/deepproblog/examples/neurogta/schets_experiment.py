@@ -18,6 +18,7 @@ batch_size = 5
 loader = DataLoader(train_dataset, batch_size)
 lr = 1e-4
 
+# WERKT ENKEL MET ALEXNET :((((
 gta_network1 = smallnet(num_classes=3, pretrained=True)
 #gta_network1 = GTA_CNN()
 
