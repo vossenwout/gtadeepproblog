@@ -55,6 +55,8 @@ train_obj = train_model(
     infoloss=0.25,
 )
 #print(gta_network1.features[0].weight)
+model.save_state("saved_models/schetsmodel.pth")
+
 
 
 

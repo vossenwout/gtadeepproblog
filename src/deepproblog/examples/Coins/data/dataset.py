@@ -18,11 +18,11 @@ class Coins(ImageDataset):
         self,
         subset,
     ):  # subset is training of test
-        super().__init__("{}/image_data/{}/".format(path, subset), transform=transform)
+        super().__init__("{}/image_data_schets_experiment/{}/".format(path, subset), transform=transform)
         # data contains (c1,c2,outcome training/test tuples)
         self.data = []
         self.subset = subset
-        with open("{}/label_data/{}.csv".format(path, subset)) as f:
+        with open("{}/label_data_schets_experiment/{}.csv".format(path, subset)) as f:
             for line in f:
                 c1, c2 = [l.strip() for l in line.split(",")]
                 outcome = "loss"

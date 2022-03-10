@@ -24,6 +24,9 @@ model = Model("model.pl", [coin_net1, coin_net2])
 model.add_tensor_source("train", train_dataset)
 model.add_tensor_source("test", test_dataset)
 model.set_engine(ExactEngine(model), cache=True)
+
+print(coin_network1.features[0].weight)
+
 train_obj = train_model(
     model,
     loader,
@@ -34,3 +37,5 @@ train_obj = train_model(
     test=lambda x: [("Accuracy", get_confusion_matrix(x, test_dataset).accuracy())],
     infoloss=0.25,
 )
+
+print(coin_network1.features[0].weight)

@@ -30,6 +30,6 @@ def generate_examples(N, fname):
 
 random.seed(1234)
 
-generate_examples(100, "label_data/train")
+generate_examples(100, "label_data_schets_experiment/train")
 
-generate_examples(20, "label_data/test")
+generate_examples(20, "label_data_schets_experiment/test")

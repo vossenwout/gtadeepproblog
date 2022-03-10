@@ -13,17 +13,19 @@ transform = transforms.Compose(
 )
 
 
-class Traffic_keypress_data(ImageDataset):
+class Traffic_keypress_data_schets(ImageDataset):
     def __init__(
         self,
         subset,
     ):
         # ???
-        super().__init__("{}/image_data/{}/".format(path, subset), transform=transform)
+        super().__init__("{}/image_data_schets_experiment/{}/".format(path, subset), transform=transform)
+        #super().__init__("{}/image_data/{}/".format(path, subset), transform=transform)
         self.data = []
         self.subset = subset
         # we halen alle key inputs op en steken ze in array
-        with open("{}/label_data/{}.csv".format(path, subset)) as f:
+        with open("{}/label_data_schets_experiment/{}.csv".format(path, subset)) as f:
+        #with open("{}/label_data/{}.csv".format(path, subset)) as f:
             for line in f:
                 self.data.append(line)
 
@@ -37,6 +39,35 @@ class Traffic_keypress_data(ImageDataset):
 
     def __len__(self):
         return len(self.data)
+
+
+class Traffic_keypress_data(ImageDataset):
+    def __init__(
+        self,
+        subset,
+    ):
+        # ???
+        super().__init__("{}/image_data/{}/".format(path, subset), transform=transform)
+        #super().__init__("{}/image_data/{}/".format(path, subset), transform=transform)
+        self.data = []
+        self.subset = subset
+        # we halen alle key inputs op en steken ze in array
+        with open("{}/label_data/{}.csv".format(path, subset)) as f:
+        #with open("{}/label_data/{}.csv".format(path, subset)) as f:
+            for line in f:
+                self.data.append(line)
+
+    def to_query(self, i):
+        key_input = int(self.data[i])
+
+        # we formuleren input query
+        sub = {Term("a"): Term("tensor", Term(self.subset, Constant(i)))}
+        #return Query(Term("drivinginput", Term("a"), Term(key_input)), sub)
+        return Query(Term("drivinginput", Term("a"), Constant(key_input)), sub)
+
+    def __len__(self):
+        return len(self.data)
+
 
 
 train_dataset = Traffic_keypress_data("train")

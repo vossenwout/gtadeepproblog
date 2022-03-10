@@ -25,13 +25,17 @@ def get_confusion_matrix(
     for i, gt_query in enumerate(dataset.to_queries()):
         test_query = gt_query.variable_output()
         answer = model.solve([test_query])[0]
+
+        print("chances= {}".format(answer))
         actual = str(gt_query.output_values()[0])
+        print("actual= {}".format(actual))
         if len(answer.result) == 0:
             predicted = "no_answer"
             if verbose > 1:
                 print("no answer for query {}".format(gt_query))
         else:
             max_ans = max(answer.result, key=lambda x: answer.result[x])
+            print("answer= {}".format(max_ans))
             p = answer.result[max_ans]
             if eps is None:
                 predicted = str(max_ans.args[gt_query.output_ind[0]])

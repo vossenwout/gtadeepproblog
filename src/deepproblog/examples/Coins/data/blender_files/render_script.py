@@ -44,6 +44,6 @@ def render_csv(f_in, f_out):
 
 
 render_csv(
-    "{}/label_data/{}.csv".format(argv[0], argv[1]),
-    "{}/image_data/{}/".format(argv[0], argv[1]),
+    "{}/label_data_schets_experiment/{}.csv".format(argv[0], argv[1]),
+    "{}/image_data_schets_experiment/{}/".format(argv[0], argv[1]),
 )

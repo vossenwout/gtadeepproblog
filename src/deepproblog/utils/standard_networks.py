@@ -62,7 +62,8 @@ class SmallNet(nn.Module):
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=3, stride=2),
         )
-        self.N = 2304
+        self.N = 2304 #(512x512)
+        #self.N = 25088
         if size is not None:
             input = torch.empty(1, 3, *size)
             out = self.features(input)
