@@ -15,7 +15,7 @@ from Xlib import display, X
 from PIL import Image
 
 
-from deepproblog.utils.standard_networks import smallnet
+from deepproblog.utils.standard_networks import smallnet, SmallNet
 from deepproblog.query import Query
 from problog.logic import Term, Constant
 
@@ -29,25 +29,31 @@ W
 """
 
 
-key_dict = {0:"w", 4 : "w, a", 5 : "w, d"}
+key_dict = {0: "w", 2: "a", 3: "d", 4: "w, a", 5: "w, d", 8: ""}
 
 lr = 1e-4
 
-gta_network1 = smallnet(num_classes=3, pretrained=True)
+gta_network1 = SmallNet(num_classes=3, N=10752)
+gta_network2 = SmallNet(num_classes=3, N=768)
+batch_size = 5
 gta_net1 = Network(gta_network1, "gta_net1", batching=True)
 gta_net1.optimizer = torch.optim.Adam(gta_network1.parameters(), lr=lr)
+gta_net2 = Network(gta_network2, "gta_net2", batching=True)
+gta_net2.optimizer = torch.optim.Adam(gta_network2.parameters(), lr=lr)
 
-model = Model("../model4.pl", [gta_net1])
+model = Model("../model5.pl", [gta_net1, gta_net2])
+model.add_tensor_source("train", train_dataset)
 model.set_engine(ExactEngine(model), cache=True)
-#model.add_tensor_source("live_dataset", train_dataset)
+
 model.load_state("../saved_models/gtamodel.pth")
 
 
-def tensor_to_query(tensor):
+
+def tensor_to_query(tensor1, tensor2):
     #sub = {Term("a"): Term("tensor", Term("train", Constant(id)))}
     #sub = {Term("a"):  Term("tensor", Constant(0) ) }
-    sub = {Term("a"): tensor}
-    query = Query(Term("drivinginput", Term("a"), Constant(1)), sub)
+    sub = {Term("a"): tensor1, Term("b"): tensor2 }
+    query = Query(Term("drivinginput", Term("a"),Term("b"), Constant(1)), sub)
     return query.variable_output()
 
 def query_model(query):
@@ -56,17 +62,21 @@ def query_model(query):
 
 def get_keypress(tensor):
     answer = tensor[0]
+    #temp = anaswer.result[0]
     max_ans = max(answer.result, key=lambda x: answer.result[x])
-    print("answer= {}".format(max_ans))
-    print("prob = {}".format(answer.result[max_ans]))
-    answer = max_ans.args[1]
+    #print("answer= {}".format(max_ans))
+    #print("prob = {}".format(answer.result[max_ans]))
+    answer = max_ans.args[2]
     return int(answer)
 
 
 def simulate_keypress(keypress):
     press = key_dict.get(keypress)
-
+    if press == "":
+        time.sleep(0.2)
+        return
     keyboard.press(press)
+    time.sleep(0.2)
     keyboard.release(press)
     #keyboard.press_and_release(press)
 
@@ -80,6 +90,31 @@ def grabscreen(top_left_x, top_left_y,width,height):
     finally:
         dsp.close()
     return image
+
+def roi(image):
+    width, height = image.size
+    left = 0
+    right = width
+    bottom = height
+    top= height-140
+    cropped_image = image.crop((left, top, right, bottom))
+
+    return cropped_image
+
+def split_speedometer(image):
+
+    width, height = image.size
+
+    # Setting the points for cropped image
+    left = width - 130
+    top = height - 80
+    right = width
+    bottom = height
+
+    cropped_image = image.crop((left, top, right, bottom))
+
+    return cropped_image
+
 
 
 def getkeys():
@@ -106,20 +141,26 @@ def drive():
     print('Press T to start')
     while (True):
         if not paused:
-            screen = np.array(grabscreen(0,0,800,600))
+            screen = np.array(grabscreen(72,84,800,600))
             # resize to something a bit more acceptable for a CNN
             screen = cv2.resize(screen, (480, 270))
             # run a color convert:
             screen = cv2.cvtColor(screen, cv2.COLOR_BGR2RGB)
             # Define a transform to convert the image to tensor
             transform = transforms.ToTensor()
+            # screen is 480, 270
+            speedo = screen[190:270, 350:480]
+            horizon = screen[130:270, 0:480]
+
 
             # Convert the image to PyTorch tensor
-            tensor = transform(screen)
+            tensor1 = transform(horizon)
+            tensor2 = transform(speedo)
 
-            tensorId = model.store_tensor(tensor)
+            tensorId1 = model.store_tensor(tensor1)
+            tensorId2 = model.store_tensor(tensor2)
 
-            query = tensor_to_query(tensorId)
+            query = tensor_to_query(tensorId1, tensorId2)
 
             answer = query_model(query)
 
@@ -127,9 +168,9 @@ def drive():
 
             simulate_keypress(keypress)
 
-            keys = getkeys()
 
         keys = getkeys()
+
         if 't' in keys:
             if paused:
                 paused = False

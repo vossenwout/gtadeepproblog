@@ -1,6 +1,7 @@
 import os
 import glob
 
+import cv2
 import lockfile.pidlockfile
 import numpy as np
 from PIL import Image
@@ -41,6 +42,58 @@ def generate_data(path):
             test_counter = test_counter + 1
 
 
+def generate_data2(path):
+    train_counter = 0
+    test_counter = 0
+
+    training_data = np.load(path, allow_pickle=True)
+    datasize = len(training_data)
+    shuffle(training_data)
+    for data in training_data:
+        # dit verandere zodat roi als input np array krijgt
+        image = Image.fromarray(data[0])
+        label = data[1]
+        #creating training set
+        if train_counter < datasize * train_size * 2:
+            labels_train.append(label)
+            roi(image).save(image_train_path + "{}.png".format(train_counter))
+            cropped_image = split_speedometer(image)
+            cropped_image.save(image_train_path + "{}.png".format(train_counter+1))
+            train_counter = train_counter + 2
+        #creating test set
+        else:
+            labels_test.append(label)
+            roi(image).save(image_test_path + "{}.png".format(test_counter))
+            cropped_image = split_speedometer(image)
+            cropped_image.save(image_test_path + "{}.png".format(test_counter+1))
+            test_counter = test_counter + 2
+
+def roi(image):
+    width, height = image.size
+    left = 0
+    right = width
+    bottom = height
+    top= height-140
+    cropped_image = image.crop((left, top, right, bottom))
+
+    return cropped_image
+
+def split_speedometer(image):
+
+    width, height = image.size
+
+    # Setting the points for cropped image
+    left = width - 130
+    top = height - 80
+    right = width
+    bottom = height
+
+    cropped_image = image.crop((left, top, right, bottom))
+
+    return cropped_image
+
+
+
 
 
 def save_labels():
@@ -55,7 +108,7 @@ def save_labels():
     test_file.close()
 
 
-generate_data("balanced_data/balanced_data.npy")
+generate_data2("balanced_data/balanced_data.npy")
 save_labels()
 
 
