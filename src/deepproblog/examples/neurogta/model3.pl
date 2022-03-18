@@ -1,11 +1,13 @@
 nn(gta_net1, [Picture], Y, [left,mid,right]) :: lane(Picture,Y).
+nn(gta_net2, [Speedometer], Z, [slow, fast]) :: speed(Speedometer,Z).
+nn(gta_net3, [Obstacle], X, [noobst, closeobst, farobst]) :: obstacle(Obstacle,X).
 
 
-presskey(Picture, d) :- lane(Picture,left); lane(Picture,mid) , \+lane(Picture,right).
-presskey(Picture, a) :- lane(Picture,right); lane(Picture,mid) , \+lane(Picture,left).
-presskey(Picture, w) :- lane(Picture,right) ; lane(Picture,left); lane(Picture,mid).
-presskey(Picture, s):- \+lane(Picture,right), \+lane(Picture,mid) , \+lane(Picture,left).
-
+presskey(Picture, d) :- lane(Picture,right).
+presskey(Picture, a) :- lane(Picture,left).
+presskey(Picture, w) :- obstacle(Obstacle, noobst), speed(Speedometer,slow) .
+presskey(Picture, s) :- obstacle(Obstacle, closeobst).
+presskey(Picture, nk) :- lane(Picture,mid), (obstacle(Obstacle, farobst) ; speed(Speedometer, fast))
 
 
 drivedirection(Picture, 0) :-  presskey(Picture,w), \+presskey(Picture,s), \+ presskey(Picture,d), \+ presskey(Picture, a).
@@ -14,15 +16,9 @@ drivedirection(Picture, 2) :- presskey(Picture,a), \+presskey(Picture,d), \+ pre
 drivedirection(Picture, 3) :- presskey(Picture,d), \+presskey(Picture,s), \+ presskey(Picture,w), \+ presskey(Picture, a).
 drivedirection(Picture, 4) :- presskey(Picture,w), \+presskey(Picture,s), \+ presskey(Picture,d), presskey(Picture, a).
 drivedirection(Picture, 5) :- presskey(Picture,d), \+presskey(Picture,s), presskey(Picture,w), \+ presskey(Picture, a).
-drivedirection(Picture, 6) :- \+presskey(Picture,d), presskey(Picture,s), \+ presskey(Picture,w), presskey(Picture, a).
-drivedirection(Picture, 7) :- presskey(Picture,d), presskey(Picture,s), \+ presskey(Picture,w), \+ presskey(Picture, a).
-drivedirection(Picture, 8) :- \+presskey(Picture,d), \+presskey(Picture,s), \+ presskey(Picture,w), \+ presskey(Picture, a).
+drivedirection(Picture, 8) :- \+presskey(Picture,d), \+presskey(Picture,s), \+ presskey(Picture,w), \+ presskey(Picture, a), presskey(Picture, nk).
 
 
 
 
-%drivedirection(Picture, 3) :- lane(Picture,left).
-%drivedirection(Picture, 5) :- lane(Picture,left).
-%drivedirection(Picture, 7) :- lane(Picture,left).
-%drivedirection(Picture, 2) :- lane(Picture,n).
 drivinginput(Picture, Input) :- drivedirection(Picture,Input).
