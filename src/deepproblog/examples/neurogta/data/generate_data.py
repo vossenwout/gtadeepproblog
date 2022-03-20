@@ -1,8 +1,6 @@
 import os
 import glob
 
-import cv2
-import lockfile.pidlockfile
 import numpy as np
 from PIL import Image
 from random import shuffle
@@ -108,7 +106,7 @@ def save_labels():
     test_file.close()
 
 
-generate_data2("balanced_data/balanced_data.npy")
+generate_data2("balanced_data.npy")
 save_labels()
 
 

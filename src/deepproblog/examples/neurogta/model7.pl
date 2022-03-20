@@ -13,16 +13,16 @@ drivedirection(Picture, Speedometer, Obstacle , 4) :- lane(Picture,right) , \+ s
 %wd forward to the right
 drivedirection(Picture, Speedometer, Obstacle , 5) :- lane(Picture,left), \+ speed(Speedometer,fast).
 %nk nokey
-drivedirection(Picture, Speedometer, Obstacle , 8) :- (lane(Picture,mid), speed(Speedometer, fast) )
+drivedirection(Picture, Speedometer, Obstacle , 8) :- (lane(Picture,mid), speed(Speedometer, fast) ).
 drivedirection(Picture, Speedometer, Obstacle , 8) :- obstacle(Obstacle, farobst).
 %s brake
 drivedirection(Picture, Speedometer, Obstacle, 1) :- lane(Picture,mid), speed(Speedometer, fast).
-drivedirection(Picture, Speedometer, Obstacle, 1) :-  \+ speed(Speedometer, nospeed) , obstacle(closeobst,Obstacle).
+drivedirection(Picture, Speedometer, Obstacle, 1) :-  \+ speed(Speedometer, nospeed) , obstacle(Obstacle,closeobst).
 
 % press on the w key IF we are standing still
-drivedirection(Picture, Speedometer, Obstacle ,  0) :- speed(Speedometer, nospeed), \+ (closeobst, Obstacle).
-drivedirection(Picture, Speedometer, Obstacle ,  4) :- speed(Speedometer, nospeed), \+ (closeobst, Obstacle).
-drivedirection(Picture, Speedometer, Obstacle ,  5) :- speed(Speedometer, nospeed), \+ (closeobst, Obstacle).
+drivedirection(Picture, Speedometer, Obstacle ,  0) :- speed(Speedometer, nospeed), \+ obstacle(Obstacle, closeobst).
+drivedirection(Picture, Speedometer, Obstacle ,  4) :- speed(Speedometer, nospeed), \+ obstacle(Obstacle, closeobst).
+drivedirection(Picture, Speedometer, Obstacle ,  5) :- speed(Speedometer, nospeed), \+ obstacle(Obstacle, closeobst).
 
 
 %sa

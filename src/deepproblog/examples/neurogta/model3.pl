@@ -3,22 +3,22 @@ nn(gta_net2, [Speedometer], Z, [slow, fast]) :: speed(Speedometer,Z).
 nn(gta_net3, [Obstacle], X, [noobst, closeobst, farobst]) :: obstacle(Obstacle,X).
 
 
-presskey(Picture, d) :- lane(Picture,right).
-presskey(Picture, a) :- lane(Picture,left).
-presskey(Picture, w) :- obstacle(Obstacle, noobst), speed(Speedometer,slow) .
-presskey(Picture, s) :- obstacle(Obstacle, closeobst).
-presskey(Picture, nk) :- lane(Picture,mid), (obstacle(Obstacle, farobst) ; speed(Speedometer, fast))
+presskey(Picture, Speedometer, Obstacle, d) :- lane(Picture,right).
+presskey(Picture,Speedometer, Obstacle, a) :- lane(Picture,left).
+presskey(Picture,Speedometer, Obstacle, w) :- obstacle(Obstacle, noobst), speed(Speedometer,slow) .
+presskey(Picture,Speedometer, Obstacle, s) :- obstacle(Obstacle, closeobst).
+presskey(Picture,Speedometer, Obstacle, nk) :- lane(Picture,mid), (obstacle(Obstacle, farobst) ; speed(Speedometer, fast)).
+
+drivedirection(Picture, Speedometer, Obstacle, 0) :-  presskey(Picture,Speedometer, Obstacle,w), \+presskey(Picture,Speedometer, Obstacle,s), \+ presskey(Picture,Speedometer, Obstacle,d), \+ presskey(Picture,Speedometer, Obstacle, a).
+
+drivedirection(Picture,Speedometer, Obstacle, 1) :- presskey(Picture,Speedometer, Obstacle,s), \+presskey(Picture,Speedometer, Obstacle,d), \+ presskey(Picture,Speedometer, Obstacle,w), \+ presskey(Picture,Speedometer, Obstacle, a).
+drivedirection(Picture, Speedometer, Obstacle,2) :- presskey(Picture,Speedometer, Obstacle,a), \+presskey(Picture,Speedometer, Obstacle,d), \+ presskey(Picture,Speedometer, Obstacle,w), \+ presskey(Picture,Speedometer, Obstacle, d).
+drivedirection(Picture, Speedometer, Obstacle,3) :- presskey(Picture,Speedometer, Obstacle,d), \+presskey(Picture,Speedometer, Obstacle,s), \+ presskey(Picture,Speedometer, Obstacle,w), \+ presskey(Picture,Speedometer, Obstacle, a).
+drivedirection(Picture,Speedometer, Obstacle, 4) :- presskey(Picture,Speedometer, Obstacle,w), \+presskey(Picture,Speedometer, Obstacle,s), \+ presskey(Picture,Speedometer, Obstacle,d), presskey(Picture,Speedometer, Obstacle, a).
+drivedirection(Picture,Speedometer, Obstacle, 5) :- presskey(Picture,Speedometer, Obstacle,d), \+presskey(Picture,Speedometer, Obstacle,s), presskey(Picture,Speedometer, Obstacle,w), \+ presskey(Picture, Speedometer, Obstacle,a).
+drivedirection(Picture,Speedometer, Obstacle, 8) :- \+presskey(Picture,Speedometer, Obstacle,d), \+presskey(Picture,Speedometer, Obstacle,s), \+ presskey(Picture,Speedometer, Obstacle,w), \+ presskey(Picture, Speedometer, Obstacle,a), presskey(Picture,Speedometer, Obstacle, nk).
 
 
-drivedirection(Picture, 0) :-  presskey(Picture,w), \+presskey(Picture,s), \+ presskey(Picture,d), \+ presskey(Picture, a).
-drivedirection(Picture, 1) :- presskey(Picture,s), \+presskey(Picture,d), \+ presskey(Picture,w), \+ presskey(Picture, a).
-drivedirection(Picture, 2) :- presskey(Picture,a), \+presskey(Picture,d), \+ presskey(Picture,w), \+ presskey(Picture, d).
-drivedirection(Picture, 3) :- presskey(Picture,d), \+presskey(Picture,s), \+ presskey(Picture,w), \+ presskey(Picture, a).
-drivedirection(Picture, 4) :- presskey(Picture,w), \+presskey(Picture,s), \+ presskey(Picture,d), presskey(Picture, a).
-drivedirection(Picture, 5) :- presskey(Picture,d), \+presskey(Picture,s), presskey(Picture,w), \+ presskey(Picture, a).
-drivedirection(Picture, 8) :- \+presskey(Picture,d), \+presskey(Picture,s), \+ presskey(Picture,w), \+ presskey(Picture, a), presskey(Picture, nk).
 
 
-
-
-drivinginput(Picture, Input) :- drivedirection(Picture,Input).
+drivinginput(Picture, Speedometer, Obstacle, Input) :- drivedirection(Picture, Speedometer, Obstacle, Input).

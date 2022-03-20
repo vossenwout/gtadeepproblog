@@ -61,14 +61,16 @@ class Traffic_keypress_data(ImageDataset):
         key_input = int(self.data[i])
 
         # we formuleren input query
-        sub = {Term("a"): Term("tensor", Term(self.subset, Constant(i)))}
+        sub = {Term("a"): Term("tensor", Term(self.subset, Constant(i*2))),
+               Term("b") : Term("tensor", Term(self.subset, Constant(i*2+1))),
+               Term("c"): Term("tensor", Term(self.subset, Constant(i*2)))}
         #return Query(Term("drivinginput", Term("a"), Term(key_input)), sub)
-        return Query(Term("drivinginput", Term("a"), Constant(key_input)), sub)
+        return Query(Term("drivinginput", Term("a"),Term("b"),Term("c"), Constant(key_input)), sub)
 
     def __len__(self):
         return len(self.data)
 
 
-
+#train_dataset = Traffic_keypress_data_schets("train")
 train_dataset = Traffic_keypress_data("train")
 test_dataset = Traffic_keypress_data("test")

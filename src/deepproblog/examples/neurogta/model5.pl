@@ -23,4 +23,4 @@ drivedirection(Picture, Speedometer, 8) :- lane(Picture,mid), speed(Speedometer,
 %drivedirection(Picture, Speedometer, 7) :- lane(Picture,left), speed(Picture,fast).
 
 
-drivinginput(Picture, Speedometer, Input) :- drivedirection(Picture, Speedometer,Input).
+drivinginput(Picture, Speedometer,Obstacle, Input) :- drivedirection(Picture, Speedometer,Input).

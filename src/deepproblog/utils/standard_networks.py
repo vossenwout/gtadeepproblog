@@ -43,8 +43,9 @@ class DummyNet(nn.Module):
 
 
 class SmallNet(nn.Module):
-    def __init__(self, num_classes=1000, size=None):
+    def __init__(self, num_classes=1000, size=None, N=10752):
         super(SmallNet, self).__init__()
+        self.N = N
         self.final = nn.Sigmoid() if num_classes == 1 else nn.Softmax(1)
         self.num_classes = num_classes
         self.features = nn.Sequential(
@@ -62,7 +63,7 @@ class SmallNet(nn.Module):
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=3, stride=2),
         )
-        self.N = 2304 #(512x512)
+        #self.N = 2304 #(512x512)
         #self.N = 25088
         if size is not None:
             input = torch.empty(1, 3, *size)

@@ -18,9 +18,12 @@ batch_size = 5
 loader = DataLoader(train_dataset, batch_size)
 lr = 1e-4
 
-#gta_network1 = smallnet(num_classes=3, pretrained=True)
-gta_network1 = SmallNet(num_classes=3, N=10752)
+gta_network1 = smallnet(num_classes=3, pretrained=True)
+#gta_network1 = SmallNet(num_classes=3, N=10752) #10752
 gta_network2 = SmallNet(num_classes=3, N=768)
+#gta_network2 = smallnet(num_classes=3, pretrained=True)
+#gta_network3 = SmallNet(num_classes=3, N=10752)
+gta_network3 = smallnet(num_classes=3, pretrained=True)
 #gta_network1 = MLP(3,512,512)
 #gta_network1 = GTA_CNN()
 
@@ -28,8 +31,10 @@ gta_net1 = Network(gta_network1, "gta_net1", batching=True)
 gta_net1.optimizer = torch.optim.Adam(gta_network1.parameters(), lr=lr)
 gta_net2 = Network(gta_network2, "gta_net2", batching=True)
 gta_net2.optimizer = torch.optim.Adam(gta_network2.parameters(), lr=lr)
+gta_net3 = Network(gta_network3, "gta_net3", batching=True)
+gta_net3.optimizer = torch.optim.Adam(gta_network3.parameters(), lr=lr)
 
-model = Model("model5.pl", [gta_net1, gta_net2])
+model = Model("model5.pl", [gta_net1, gta_net2, gta_net3])
 model.add_tensor_source("train", train_dataset)
 model.add_tensor_source("test", test_dataset)
 model.set_engine(ExactEngine(model), cache=True)
